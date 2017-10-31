@@ -2,12 +2,11 @@ package com.software.design.realestateapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,21 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.software.design.realestateapp.fragments.Favourites;
+import com.software.design.realestateapp.fragments.MyEvaluations;
 import com.software.design.realestateapp.fragments.NearbyProperties;
 import com.software.design.realestateapp.fragments.NewsFeed;
-import com.software.design.realestateapp.fragments.MyEvaluations;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     String userName;
+    String userEmail;
+    String s_user_id;
+
+    String testReciever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_drawer_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,8 +60,11 @@ public class DrawerActivity extends AppCompatActivity
         /////////////Start of my code, that above is auto generated
 
         userName = getIntent().getStringExtra("Username");
-        System.out.println("Username" + userName);
-        Toast.makeText(getApplicationContext(),"Username: " + userName, Toast.LENGTH_LONG).show();
+        userEmail = getIntent().getStringExtra("Email");
+        //System.out.println("Username" + userName);
+        //Toast.makeText(getApplicationContext(),"Username: " + userName, Toast.LENGTH_LONG).show();
+
+        s_user_id = getIntent().getStringExtra("USER_ID");
 
 
         FragmentManager fm = getSupportFragmentManager();
@@ -68,9 +76,19 @@ public class DrawerActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         TextView drawerUsername = (TextView)header.findViewById(R.id.drawerUsername);
+        // TextView drawerEmail = (TextView) header.findViewById(R.id.drawerEmail);
         drawerUsername.setText(userName);
+        // drawerEmail.setText(userEmail);
+
+        //(R.layout.nav_header_drawer_activity)
+
+        testReciever = new String();
 
 
+    }
+
+    public String getS_user_id(){
+        return s_user_id;
     }
 
     @Override
@@ -80,6 +98,7 @@ public class DrawerActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            testReciever = "Else";
         }
     }
 
@@ -97,8 +116,10 @@ public class DrawerActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        testReciever = "notAction";
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            testReciever = "action";
             return true;
         }
 
@@ -121,6 +142,8 @@ public class DrawerActivity extends AppCompatActivity
             ft.replace(R.id.drawerContentFrame, fragment);
             ft.commit();
 
+            testReciever = "newsFeed";
+
 
         } else if (id == R.id.nav_myEvals) {
 
@@ -129,6 +152,8 @@ public class DrawerActivity extends AppCompatActivity
             FragmentTransaction ft = fm.beginTransaction();
             ft.replace(R.id.drawerContentFrame, fragment);
             ft.commit();
+
+            testReciever = "myEvals";
 
 
         }else if (id == R.id.nav_map) {
@@ -139,7 +164,17 @@ public class DrawerActivity extends AppCompatActivity
             ft.replace(R.id.drawerContentFrame, fragment);
             ft.commit();
 
+            testReciever = "navMap";
 
+        }
+        else if(id == R.id.nav_favourites){
+            fragment = new Favourites();
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.drawerContentFrame, fragment);
+            ft.commit();
+
+            testReciever = "favourites";
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
